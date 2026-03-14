@@ -27,6 +27,14 @@
                 </a>
             </li>
 
+            <li class="menu-item {{ Route::is('bookings.*') ? 'active' : '' }}">
+                <a href="{{ route('bookings.index') }}" class="menu-link">
+                    <i class="menu-icon icon-base ri ri-calendar-check-line"></i>
+                    <div data-i18n="Pemesanan">Pemesanan Tiket</div>
+                    <div class="badge rounded-pill bg-label-primary fs-tiny ms-auto">📅</div>
+                </a>
+            </li>
+
             <li class="menu-item">
                 <a href="{{ route('hikers.index') }}" class="menu-link">
                     <i class="menu-icon icon-base ri ri-group-line"></i>

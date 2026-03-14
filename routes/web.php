@@ -52,6 +52,22 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{bookingId}/tracking-route', [HikerHistoryController::class, 'getTrackingRoute'])->name('hiker-history.tracking-route');
         });
 
+        Route::prefix('bookings')->group(function () {
+
+            Route::get('/', [BookingController::class, 'dashboardIndex'])
+                ->name('bookings.index');
+
+            Route::get('/data', [BookingController::class, 'getData'])
+                ->name('bookings.getData');
+
+            Route::post('/{id}/checkin', [BookingController::class, 'checkin'])
+                ->name('bookings.checkin');
+
+            Route::post('/{id}/checkout', [BookingController::class, 'checkout'])
+                ->name('bookings.checkout');
+
+        });
+
         Route::prefix('complaints')->group(function () {
             Route::get('/', [ComplaintsController::class, 'index'])->name('complaints.index');
             Route::get('/data', [ComplaintsController::class, 'getData'])->name('complaints.data');
@@ -133,7 +149,7 @@ Route::get('/auth', function () {
 
 Route::prefix('booking')->group(function() {
     Route::get('/', [BookingController::class, 'index'])->name('booking.index');
-    
+
     Route::post('', [BookingController::class, 'booking'])->name('booking.store');
     Route::get('/{id}/ticket', [BookingController::class, 'downloadTicket'])->name('booking.ticket');
 });
