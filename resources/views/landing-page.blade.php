@@ -2,21 +2,17 @@
 
 @section('content')
     <div class="bg-white min-h-screen overflow-hidden relative">
-        <!-- Hero Section - Lebih Besar & Immersive -->
         <div class="relative h-screen overflow-hidden">
-            <!-- Background Image dengan Parallax Effect -->
             <div class="absolute inset-0">
                 <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
                     alt="Mountain Vista" class="rellax w-full h-full object-cover scale-110" data-rellax-speed="-4"
                     id="heroImage">
             </div>
 
-            <!-- Gradient Overlay - Navy Theme -->
             <div class="absolute inset-0 pointer-events-none"
                 style="background: linear-gradient(to bottom, rgba(27, 73, 101, 0.1) 0%, transparent 40%, rgba(27, 73, 101, 0.85) 100%);">
             </div>
 
-            <!-- Altitude Badge - Redesigned -->
             <div class="absolute top-6 right-6 z-20">
                 <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl px-4 py-2.5 shadow-2xl">
                     <div class="flex items-center gap-2">
@@ -29,7 +25,6 @@
                 </div>
             </div>
 
-            <!-- Hero Content - Swiss Design Layout -->
             <div class="absolute bottom-0 left-0 right-0 z-20 pb-32">
                 <div class="px-8 space-y-6">
                     <!-- Status Badge -->
