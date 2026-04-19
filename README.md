@@ -1,61 +1,266 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Smartazone
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A **Laravel** web application for mountain hiking operations: bookings, hiker health monitoring, location tracking, complaints and equipment management, and **SOS** alerts with realtime notifications ([Pusher Channels](https://pusher.com/channels)).
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requirements
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Requirement | Notes |
+|-------------|--------|
+| PHP | ^8.2 |
+| Composer | 2.x |
+| Node.js & npm | Frontend build (Vite) |
+| Database | MySQL (see `DB_*` in `.env`) |
+| Common PHP extensions | `pdo_mysql`, `openssl`, `mbstring`, `tokenizer`, `xml`, `ctype`, `json`, `fileinfo` |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Setup from GitHub
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 1. Clone the repository
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+git clone <YOUR_REPOSITORY_URL>.git
+cd smartazone
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. Install dependencies
 
-## Laravel Sponsors
+```bash
+composer install
+npm install
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 3. Environment
 
-### Premium Partners
+Copy the example env file and generate an application key:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+# Windows (cmd/PowerShell)
+copy .env.example .env
 
-## Contributing
+# Linux / macOS
+# cp .env.example .env
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+php artisan key:generate
+```
 
-## Code of Conduct
+Edit `.env` and set at least:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **`APP_URL`** — Base URL of the app (e.g. `http://127.0.0.1:8000`). It should match how you open the site in the browser.
+- **`APP_ENV`** — `local` for development, `production` for live servers.
+- **`DB_*`** — MySQL host, database name, username, and password.
+- **`BROADCAST_DRIVER`** — Use `pusher` for realtime SOS alarms; use `log` if you want to develop without Pusher.
+- **`PUSHER_APP_*`** and **`VITE_PUSHER_APP_*`** — From the [Pusher Channels dashboard](https://dashboard.pusher.com/) (public key and cluster must match between server and frontend build).
+- **`APP_DOMAIN`** — Optional; defaults are defined in `config/app.php`.
 
-## Security Vulnerabilities
+See `.env.example` for the full variable list and inline comments.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Database
+
+Create an empty MySQL database, then run migrations:
+
+```bash
+php artisan migrate
+```
+
+Optional demo data (if seeders are provided):
+
+```bash
+php artisan db:seed
+```
+
+The example `.env` uses **database** drivers for session and cache — ensure migrations that create `sessions`, `cache`, and `jobs` tables (when applicable) have been run.
+
+### 5. Frontend assets
+
+**Development** (hot module replacement):
+
+```bash
+npm run dev
+```
+
+**Production build** (outputs to `public/build`):
+
+```bash
+npm run build
+```
+
+---
+
+## Running the application
+
+During development, the HTTP server, queue worker, and Vite should usually run **at the same time**.
+
+### Option A — Single command (recommended)
+
+The Composer script starts the Laravel server, queue worker, log tail (Pail), and Vite in parallel:
+
+```bash
+composer run dev
+```
+
+### Option B — Manual (multiple terminals)
+
+| Terminal | Command | Purpose |
+|----------|---------|---------|
+| 1 | `php artisan serve` | Web server (default `http://127.0.0.1:8000`) |
+| 2 | `npm run dev` | Vite for CSS/JS |
+| 3 | `php artisan queue:listen` | Processes queued jobs when `QUEUE_CONNECTION=database` in `.env` |
+
+Without `npm run dev`, you can run **`npm run build` once** and then use only `php artisan serve` (rebuild after JS/CSS changes).
+
+### Health check
+
+Laravel exposes a built-in route (no auth):
+
+```http
+GET /up
+```
+
+---
+
+## User roles and authentication
+
+- **Guest** — Landing page, public booking, authentication pages.
+- **`admin`** — Mountain dashboard (`/dashboard/...`): hikers, SOS, health, location, etc. (`middleware` `role:admin`).
+- **`superadmin`** — Master mountain records (`/superadmin/...`).
+
+Web login: **`GET /login`**.
+
+The REST routes in `routes/api.php` are **not** protected with Sanctum today — for production, add safeguards (API keys, Sanctum, rate limiting, HTTPS).
+
+---
+
+## REST API documentation
+
+All routes below use the **`/api`** prefix (Laravel default).
+
+Example base URL: `http://127.0.0.1:8000/api`.
+
+Recommended headers:
+
+```http
+Content-Type: application/json
+Accept: application/json
+```
+
+### Summary
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/update-log` | Submit sensor / health and location logs from an active hiker device |
+| `POST` | `/api/sos-trigger` | Trigger an emergency SOS from a device |
+
+---
+
+### `POST /api/update-log`
+
+Stores one row in **`mountain_hiker_logs`** for a **device** tied to an **active** hiker (`mountain_hiker_status.status = active`). Optionally updates **`battery_level`** on `mountain_devices`.
+
+#### Request body (JSON)
+
+| Field | Required | Type | Notes |
+|-------|----------|------|--------|
+| `device_id` | Yes | integer | Must exist in `mountain_devices` |
+| `heart_rate` | No | number | 0–250 |
+| `stress_level` | No | number | 0–100 |
+| `spo2` | No | number | 0–100 |
+| `lattitude` | No | number | Latitude, −90 to 90 *(field name matches current code spelling)* |
+| `longitude` | No | number | Longitude, −180 to 180 |
+| `timestamp` | No | datetime string | If set, used as the sample time |
+| `battery_level` | No | any | If present, updates the device `battery_level` column |
+
+#### Success response
+
+- **HTTP 201** — `status`: `"success"`, `message`, and `data` with the saved log row.
+
+#### Error responses
+
+- **422** — Validation failed (`message` contains field details).
+- **404** — Device has no active hiker registration.
+- **500** — Server error.
+
+#### Example (`curl`, Windows line continuation)
+
+```bash
+curl -X POST "http://127.0.0.1:8000/api/update-log" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"device_id\":1,\"heart_rate\":88,\"spo2\":98,\"lattitude\":-7.25,\"longitude\":112.75}"
+```
+
+---
+
+### `POST /api/sos-trigger`
+
+Inserts an SOS row into **`mountain_sos_signals`** and dispatches the **`SosSignalCreated`** broadcast event for realtime notifications (e.g. dashboard alarm).
+
+#### Request body (JSON)
+
+| Field | Required | Type | Notes |
+|-------|----------|------|--------|
+| `device_id` | Yes | integer | Must exist in `mountain_devices` |
+| `lattitude` | Yes | number | Latitude *(field name matches current code spelling)* |
+| `longitude` | Yes | number | Longitude |
+
+#### Success response
+
+- **HTTP 200** — `status`: `"success"`, `message`: `"SOS triggered successfully."`
+
+#### Error responses
+
+- **422** — Validation failed.
+- **500** — Server error.
+
+#### Example (`curl`, Windows line continuation)
+
+```bash
+curl -X POST "http://127.0.0.1:8000/api/sos-trigger" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"device_id\":1,\"lattitude\":-7.25,\"longitude\":112.75}"
+```
+
+#### SOS and alarm integration notes
+
+- Certain admin layouts subscribe to Pusher channel **`mountain-sos.{mountain_id}`** and play **`public/assets/sound/alert.mp3`** when an event is received.
+- For realtime broadcasts: set **`BROADCAST_DRIVER=pusher`**, use valid Pusher credentials, and run a queue worker if broadcasts are queued in the future.
+- Other methods in `SensorController` (**register/unregister** hiker) exist in code but are **not** registered in `routes/api.php` — add routes or use the web flow if you need non-UI registration.
+
+---
+
+## Additional SOS endpoint (not under `/api`)
+
+For creating an SOS signal from the **admin dashboard** (authenticated session), the app exposes for example:
+
+- **`POST /dashboard/sos/create`** — Different body (`booking_id`, `latitude`, `longitude`, optional `message`), with auth and admin role middleware.
+
+Validation details are defined in `SOSMonitoringController::createSOSSignal`.
+
+---
+
+## Realtime (Pusher) and alarm sound
+
+1. Configure `.env`: `BROADCAST_DRIVER=pusher`, set **`PUSHER_APP_*`** and **`VITE_PUSHER_APP_*`**, then run `php artisan config:clear` if config is cached.
+2. Ensure **`public/assets/sound/alert.mp3`** is present (dashboard layout loads this file).
+3. Browsers often block autoplay until the user **interacts** with the page once (the layout attempts to “unlock” audio on the first click).
+
+---
+
+## Testing
+
+```bash
+composer test
+```
+
+or:
+
+```bash
+php artisan test
+```
+
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is built on **Laravel**, which is open-sourced under the [MIT license](https://opensource.org/licenses/MIT). Add your own project license here if it differs.
