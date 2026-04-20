@@ -113,8 +113,8 @@
                 <h5 class="modal-title fw-semibold">
                     <i class="bi bi-geo-alt-fill me-2"></i> SOS Location Map
                 </h5>
-                <button type="button" 
-                        class="btn-close btn-close-white shadow-sm" 
+                <button type="button"
+                        class="btn-close btn-close-white shadow-sm"
                         data-bs-dismiss="modal"></button>
             </div>
 
@@ -135,6 +135,40 @@
     </div>
 </div>
 
+<div class="modal fade" id="incomingSosModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-danger border-2">
+
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    🚨 SOS ALERT MASUK
+                </h5>
+            </div>
+
+            <div class="modal-body text-center">
+                <h4 id="incomingSosMessage">Loading...</h4>
+                <p id="incomingSosLocation"></p>
+
+                <div id="incomingSosMap" style="height:350px;"></div>
+
+                <div class="mt-3 d-flex justify-content-center gap-2">
+
+                    <button onclick="stopSosAlarm()"
+                        class="btn btn-warning px-4">
+                        Stop Alarm
+                    </button>
+
+                    <button onclick="closeSosModal()"
+                        class="btn btn-secondary px-4">
+                        Close
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -149,6 +183,94 @@
 
             let sosMap = null;
             let sosOverlay = null;
+
+            let incomingMap = null;
+            let incomingVectorLayer = null;
+
+            window.showIncomingSOS = function(data) {
+                const audio = document.getElementById('alert-sound');
+
+                audio.loop = true;
+                audio.currentTime = 0;
+
+                audio.play().catch(() => {
+                    console.warn('Audio butuh interaksi user dulu');
+                });
+
+                $('#incomingSosMessage').text(
+                    data.message || 'Pendaki Membutuhkan Bantuan!'
+                );
+
+                $('#incomingSosLocation').text(
+                    `📍 ${data.latitude}, ${data.longitude}`
+                );
+
+                const modal = new bootstrap.Modal(document.getElementById('incomingSosModal'));
+                modal.show();
+
+                $('#incomingSosModal').on('shown.bs.modal', function () {
+                    initIncomingMap(data.latitude, data.longitude);
+                });
+
+                loadSOSData();
+                loadSOSStats();
+            };
+
+            window.stopSosAlarm = function() {
+                const audio = document.getElementById('alert-sound');
+
+                audio.pause();
+                audio.currentTime = 0;
+
+                console.log('🔇 Alarm stopped');
+            };
+
+            window.closeSosModal = function() {
+                const modalEl = document.getElementById('incomingSosModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+
+                modal.hide();
+            };
+
+            function initIncomingMap(lat, lon) {
+                const lonFloat = parseFloat(lon);
+                const latFloat = parseFloat(lat);
+
+                if (incomingMap) {
+                    incomingMap.setTarget(null);
+                    incomingMap = null;
+                }
+
+                const feature = new ol.Feature({
+                    geometry: new ol.geom.Point(
+                        ol.proj.fromLonLat([lonFloat, latFloat])
+                    )
+                });
+
+                incomingVectorLayer = new ol.layer.Vector({
+                    source: new ol.source.Vector({ features: [feature] }),
+                    style: new ol.style.Style({
+                        image: new ol.style.Icon({
+                            src: "https://cdn-icons-png.flaticon.com/512/535/535239.png",
+                            anchor: [0.5, 1],
+                            scale: 0.08
+                        })
+                    })
+                });
+
+                incomingMap = new ol.Map({
+                    target: 'incomingSosMap',
+                    layers: [
+                        new ol.layer.Tile({ source: new ol.source.OSM() }),
+                        incomingVectorLayer
+                    ],
+                    view: new ol.View({
+                        center: ol.proj.fromLonLat([lonFloat, latFloat]),
+                        zoom: 15
+                    }),
+                    controls: []
+                });
+            }
 
             loadSOSData();
             loadSOSStats();
