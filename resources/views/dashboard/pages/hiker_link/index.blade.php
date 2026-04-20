@@ -64,8 +64,11 @@
                         <select id="bookingSelect" name="booking_id" class="form-select" required>
                             <option value="">Pilih Booking</option>
                             @foreach ($bookings as $b)
-                                <option value="{{ $b->id }}" data-members='@json($b->members)'>Booking
-                                    #{{ $b->id }} - {{ $b->qr_code }} - team {{ $b->team_size }}</option>
+                                <option value="{{ $b->id }}" data-members='@json($b->members)'>
+                                    {{ $b->leader_name }} (Leader)
+                                    | {{ count($b->members) }} orang
+                                    | {{ $b->qr_code }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -132,12 +135,14 @@
 
                 if (Array.isArray(members)) {
                     members.forEach(m => {
+                        const isLeader = m.is_leader ? ' (Leader)' : '';
+
                         $memberSelect.append(
                             $('<option>', {
                                 value: m.name,
-                                text: `${m.name} - ${m.email} - ${m.phone} - ${m.nik}`,
-                                'data-nik': m.nik,
-                                'data-phone': m.phone
+                                text: `${m.name}${isLeader} - ${m.phone ?? '-'}`,
+                                'data-nik': m.nik ?? '',
+                                'data-phone': m.phone ?? ''
                             })
                         );
                     });
@@ -146,7 +151,7 @@
 
 
             // $('#memberSelect').on('change', function() {
-            //     $('#memberNik').val(''); 
+            //     $('#memberNik').val('');
             //     $('#memberPhone').val('');
             // });
 
