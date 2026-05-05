@@ -17,11 +17,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $fillable = ['name', 'nik', 'email', 'phone', 'emergency_contact', 'password', 'user_type', 'mountain_id'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -44,5 +40,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function mountain() {
+        return $this->belongsTo(Mountain::class);
+    }
+
+    public function bookings() {
+        return $this->hasMany(MountainBooking::class);
     }
 }
