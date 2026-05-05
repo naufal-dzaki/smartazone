@@ -101,6 +101,41 @@
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
 
+    <div class="modal fade" id="incomingSosModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-danger border-2">
+
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        🚨 SOS ALERT MASUK
+                    </h5>
+                </div>
+
+                <div class="modal-body text-center">
+                    <h4 id="incomingSosMessage">Loading...</h4>
+                    <p id="incomingSosLocation"></p>
+
+                    <div id="incomingSosMap" style="height:350px;"></div>
+
+                    <div class="mt-3 d-flex justify-content-center gap-2">
+
+                        <button onclick="stopSosAlarm()"
+                            class="btn btn-warning px-4">
+                            Stop Alarm
+                        </button>
+
+                        <button onclick="closeSosModal()"
+                            class="btn btn-secondary px-4">
+                            Close
+                        </button>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/ol/dist/ol.js"></script>
     @include('dashboard.layouts.tail')
     @stack('scripts')

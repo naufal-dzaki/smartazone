@@ -29,6 +29,96 @@
                     window.showIncomingSOS(data.sosData);
                 }
             });
+
+            let incomingMap = null;
+            let incomingVectorLayer = null;
+
+            window.showIncomingSOS = function(data) {
+                const audio = document.getElementById('alert-sound');
+
+                audio.loop = true;
+                audio.currentTime = 0;
+
+                audio.play().catch(() => {
+                    console.warn('Audio butuh interaksi user dulu');
+                });
+
+                $('#incomingSosMessage').text(
+                    data.message || 'Pendaki Membutuhkan Bantuan!'
+                );
+
+                $('#incomingSosLocation').text(
+                    `📍 ${data.latitude}, ${data.longitude}`
+                );
+
+                const modal = new bootstrap.Modal(document.getElementById('incomingSosModal'));
+                modal.show();
+
+                $('#incomingSosModal').on('shown.bs.modal', function () {
+                    initIncomingMap(data.latitude, data.longitude);
+                });
+
+                if (typeof loadSOSData === 'function' && typeof loadSOSStats === 'function') {
+                    loadSOSData();
+                    loadSOSStats();
+                }
+            };
+
+            window.stopSosAlarm = function() {
+                const audio = document.getElementById('alert-sound');
+
+                audio.pause();
+                audio.currentTime = 0;
+
+                console.log('🔇 Alarm stopped');
+            };
+
+            window.closeSosModal = function() {
+                const modalEl = document.getElementById('incomingSosModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+
+                modal.hide();
+            };
+
+            function initIncomingMap(lat, lon) {
+                const lonFloat = parseFloat(lon);
+                const latFloat = parseFloat(lat);
+
+                if (incomingMap) {
+                    incomingMap.setTarget(null);
+                    incomingMap = null;
+                }
+
+                const feature = new ol.Feature({
+                    geometry: new ol.geom.Point(
+                        ol.proj.fromLonLat([lonFloat, latFloat])
+                    )
+                });
+
+                incomingVectorLayer = new ol.layer.Vector({
+                    source: new ol.source.Vector({ features: [feature] }),
+                    style: new ol.style.Style({
+                        image: new ol.style.Icon({
+                            src: "https://cdn-icons-png.flaticon.com/512/535/535239.png",
+                            anchor: [0.5, 1],
+                            scale: 0.08
+                        })
+                    })
+                });
+
+                incomingMap = new ol.Map({
+                    target: 'incomingSosMap',
+                    layers: [
+                        new ol.layer.Tile({ source: new ol.source.OSM() }),
+                        incomingVectorLayer
+                    ],
+                    view: new ol.View({
+                        center: ol.proj.fromLonLat([lonFloat, latFloat]),
+                        zoom: 15
+                    }),
+                    controls: []
+                });
+            }
         });
     </script>
 
