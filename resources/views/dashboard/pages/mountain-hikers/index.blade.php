@@ -115,7 +115,7 @@ $(document).ready(function() {
                             <td>${h.phone ?? '-'}</td>
                             <td><small>${h.hike_date} - ${h.return_date}</small></td>
                             <td>${h.team_size}</td>
-                            <td>${h.lattitude} - ${h.longitude}</td>
+                            <td>${h.latitude} - ${h.longitude}</td>
                             <td>
                                 <button class="btn btn-sm btn-info view-map" data-id="${h.booking_id}">
                                     Lihat
@@ -167,7 +167,7 @@ $(document).ready(function() {
             mapInstance = null
         }
 
-        if (!logs || logs.length === 0 || !logs[0].lattitude || !logs[0].longitude) {
+        if (!logs || logs.length === 0 || !logs[0].latitude || !logs[0].longitude) {
             $('#logDetails').html(
                 '<div class="alert alert-warning m-3">Tidak ada data lokasi ditemukan.</div>')
             $('#infoContent').html('Tidak ada titik ditemukan.')
@@ -180,7 +180,7 @@ $(document).ready(function() {
             geometry: new ol.geom.Point(
                 ol.proj.fromLonLat([
                     parseFloat(log.longitude),
-                    parseFloat(log.lattitude)
+                    parseFloat(log.latitude)
                 ])
             ),
             data: log
@@ -207,7 +207,7 @@ $(document).ready(function() {
             view: new ol.View({
                 center: ol.proj.fromLonLat([
                     parseFloat(first.longitude),
-                    parseFloat(first.lattitude)
+                    parseFloat(first.latitude)
                 ]),
                 zoom: 13
             }),

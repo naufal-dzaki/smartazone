@@ -28,7 +28,7 @@ class SOSMonitoringController extends Controller
             ->select(
                 'mss.id as sos_id',
                 'mss.device_id',
-                'mss.lattitude as latitude',
+                'mss.latitude',
                 'mss.longitude',
                 'mss.timestamp',
                 'mh.hiker_name',

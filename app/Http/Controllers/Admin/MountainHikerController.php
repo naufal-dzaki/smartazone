@@ -46,7 +46,7 @@ class MountainHikerController extends Controller
 
         $data = $bookings->map(function ($b) {
             if (!$b->device_id) {
-                $b->lattitude = null;
+                $b->latitude = null;
                 $b->longitude = null;
                 $b->timestamp = null;
                 return $b;
@@ -54,12 +54,12 @@ class MountainHikerController extends Controller
 
             $lastLog = DB::table('mountain_hiker_logs as hl')
                 ->where('hl.device_id', $b->device_id)
-                ->whereNotNull('hl.lattitude')
+                ->whereNotNull('hl.latitude')
                 ->whereNotNull('hl.longitude')
                 ->orderByDesc('hl.timestamp')
-                ->first(['hl.lattitude', 'hl.longitude', 'hl.timestamp']);
+                ->first(['hl.latitude', 'hl.longitude', 'hl.timestamp']);
 
-            $b->lattitude = $lastLog->lattitude ?? null;
+            $b->latitude = $lastLog->latitude ?? null;
             $b->longitude = $lastLog->longitude ?? null;
             $b->timestamp = $lastLog->timestamp ?? null;
             return $b;
@@ -80,7 +80,7 @@ public function getLogs(Request $request)
         return response()->json(['logs' => []]);
     }
 
-    $fields = ['lattitude', 'longitude', 'heart_rate', 'spo2', 'stress_level'];
+    $fields = ['latitude', 'longitude', 'heart_rate', 'spo2', 'stress_level'];
     $log = [];
 
     foreach ($fields as $field) {

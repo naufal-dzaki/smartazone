@@ -77,6 +77,7 @@ class SmartazoneSeeder extends Seeder
                 'stress_level' => rand(10, 30),
                 'timestamp' => Carbon::now()->subMinutes($i * 5),
                 'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
     }

@@ -382,7 +382,7 @@
             }
 
             function initSOSMap(s) {
-                if (!s.lattitude || !s.longitude) {
+                if (!s.latitude || !s.longitude) {
                     $('#sosMapInfo').html('No valid location data.');
                     return;
                 }
@@ -393,7 +393,7 @@
                 }
 
                 const lon = parseFloat(s.longitude);
-                const lat = parseFloat(s.lattitude);
+                const lat = parseFloat(s.latitude);
 
                 const feature = new ol.Feature({
                     geometry: new ol.geom.Point(
@@ -453,7 +453,7 @@
                     <b>${d.hiker_name}</b><br>
                     ${d.mountain_name}<br>
                     ${d.timestamp}<br>
-                    📍 ${d.lattitude}, ${d.longitude}
+                    📍 ${d.latitude}, ${d.longitude}
                 `;
                         sosOverlay.setPosition(f.getGeometry().getCoordinates());
 
@@ -461,7 +461,7 @@
                     <b>${d.hiker_name}</b><br>
                     ${d.mountain_name}<br>
                     Time: ${d.timestamp}<br>
-                    Location: ${d.lattitude}, ${d.longitude}
+                    Location: ${d.latitude}, ${d.longitude}
                 `);
                     } else {
                         sosOverlay.setPosition(undefined);

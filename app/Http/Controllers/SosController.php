@@ -13,7 +13,7 @@ class SosController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'device_id'  => 'required|integer|exists:mountain_devices,id',
-            'lattitude'  => 'required|numeric|between:-90,90',
+            'latitude'  => 'required|numeric|between:-90,90',
             'longitude'  => 'required|numeric|between:-180,180',
         ]);
 
@@ -35,7 +35,7 @@ class SosController extends Controller
 
         DB::table('mountain_sos_signals')->insert([
             'device_id'  => $validated['device_id'],
-            'lattitude'  => $validated['lattitude'],
+            'latitude'  => $validated['latitude'],
             'longitude'  => $validated['longitude'],
             'timestamp'  => now(),
             'created_at' => now(),
@@ -45,7 +45,7 @@ class SosController extends Controller
         event(new SosSignalCreated([
             'device_id'   => $validated['device_id'],
             'mountain_id' => $mountainId,
-            'latitude'    => $validated['lattitude'],
+            'latitude'    => $validated['latitude'],
             'longitude'   => $validated['longitude'],
             'message'     => 'Butuh bantuan segera!',
         ]));

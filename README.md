@@ -167,7 +167,7 @@ Stores one row in **`mountain_hiker_logs`** for a **device** tied to an **active
 | `heart_rate` | No | number | 0–250 |
 | `stress_level` | No | number | 0–100 |
 | `spo2` | No | number | 0–100 |
-| `lattitude` | No | number | Latitude, −90 to 90 *(field name matches current code spelling)* |
+| `latitude` | No | number | Latitude, −90 to 90 *(field name matches current code spelling)* |
 | `longitude` | No | number | Longitude, −180 to 180 |
 | `timestamp` | No | datetime string | If set, used as the sample time |
 | `battery_level` | No | any | If present, updates the device `battery_level` column |
@@ -187,7 +187,7 @@ Stores one row in **`mountain_hiker_logs`** for a **device** tied to an **active
 ```bash
 curl -X POST "http://127.0.0.1:8000/api/update-log" ^
   -H "Content-Type: application/json" ^
-  -d "{\"device_id\":1,\"heart_rate\":88,\"spo2\":98,\"lattitude\":-7.25,\"longitude\":112.75}"
+  -d "{\"device_id\":1,\"heart_rate\":88,\"spo2\":98,\"latitude\":-7.25,\"longitude\":112.75}"
 ```
 
 ---
@@ -201,7 +201,7 @@ Inserts an SOS row into **`mountain_sos_signals`** and dispatches the **`SosSign
 | Field | Required | Type | Notes |
 |-------|----------|------|--------|
 | `device_id` | Yes | integer | Must exist in `mountain_devices` |
-| `lattitude` | Yes | number | Latitude *(field name matches current code spelling)* |
+| `latitude` | Yes | number | Latitude *(field name matches current code spelling)* |
 | `longitude` | Yes | number | Longitude |
 
 #### Success response
@@ -218,7 +218,7 @@ Inserts an SOS row into **`mountain_sos_signals`** and dispatches the **`SosSign
 ```bash
 curl -X POST "http://127.0.0.1:8000/api/sos-trigger" ^
   -H "Content-Type: application/json" ^
-  -d "{\"device_id\":1,\"lattitude\":-7.25,\"longitude\":112.75}"
+  -d "{\"device_id\":1,\"latitude\":-7.25,\"longitude\":112.75}"
 ```
 
 #### SOS and alarm integration notes

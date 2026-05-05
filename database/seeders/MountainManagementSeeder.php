@@ -128,7 +128,7 @@ class MountainManagementSeeder extends Seeder
             $firstName = $this->firstNames[array_rand($this->firstNames)];
             $lastName = $this->lastNames[array_rand($this->lastNames)];
             $userType = $userTypes[array_rand($userTypes)];
-            
+
             DB::table('users')->insert([
                 'name' => $firstName . ' ' . $lastName,
                 'nik' => sprintf('%016d', rand(1000000000000000, 9999999999999999)),
@@ -148,19 +148,19 @@ class MountainManagementSeeder extends Seeder
     {
         $userIds = DB::table('users')->where('user_type', 'pendaki')->pluck('id')->toArray();
         $mountainIds = DB::table('mountains')->pluck('id')->toArray();
-        
+
         // Skip if no users or mountains exist
         if (empty($userIds) || empty($mountainIds)) {
             return;
         }
-        
+
         $statuses = ['active', 'cancelled', 'completed'];
 
         for ($i = 0; $i < 50; $i++) {
             $hikeDate = Carbon::now()->addDays(rand(1, 180));
             $returnDate = $hikeDate->copy()->addDays(rand(1, 14));
             $teamSize = rand(1, 8);
-            
+
             $members = [];
             for ($j = 0; $j < $teamSize; $j++) {
                 $members[] = [
@@ -171,7 +171,7 @@ class MountainManagementSeeder extends Seeder
             }
 
             $status = $statuses[array_rand($statuses)];
-            
+
             DB::table('mountain_bookings')->insert([
                 'user_id' => $userIds[array_rand($userIds)],
                 'mountain_id' => $mountainIds[array_rand($mountainIds)],
@@ -193,12 +193,12 @@ class MountainManagementSeeder extends Seeder
     private function seedMountainEquipments()
     {
         $mountainIds = DB::table('mountains')->pluck('id')->toArray();
-        
+
         // Skip if no mountains exist
         if (empty($mountainIds)) {
             return;
         }
-        
+
         $equipments = [
             'Hiking Boots', 'Backpack', 'Tent', 'Sleeping Bag', 'Hiking Poles',
             'Helmet', 'Rope', 'Carabiner', 'Headlamp', 'GPS Device',
@@ -230,12 +230,12 @@ class MountainManagementSeeder extends Seeder
         $bookingIds = DB::table('mountain_bookings')->pluck('id')->toArray();
         $mountainIds = DB::table('mountains')->pluck('id')->toArray();
         $equipmentIds = DB::table('mountain_equipments')->pluck('id')->toArray();
-        
+
         // Skip if no data exists
         if (empty($bookingIds) || empty($mountainIds) || empty($equipmentIds)) {
             return;
         }
-        
+
         $statuses = ['borrowed', 'returned'];
 
         for ($i = 0; $i < 50; $i++) {
@@ -255,7 +255,7 @@ class MountainManagementSeeder extends Seeder
     {
         $bookingIds = DB::table('mountain_bookings')->pluck('id')->toArray();
         $mountainIds = DB::table('mountains')->pluck('id')->toArray();
-        
+
         // Skip if no data exists
         if (empty($bookingIds) || empty($mountainIds)) {
             return;
@@ -313,7 +313,8 @@ class MountainManagementSeeder extends Seeder
                 'mountain_id' => $mountainIds[array_rand($mountainIds)],
                 'rating' => rand(1, 5),
                 'comment' => $comments[array_rand($comments)],
-                'created_at' => Carbon::now()->subDays(rand(1, 90))
+                'created_at' => Carbon::now()->subDays(rand(1, 90)),
+                'updated_at' => Carbon::now()->subDays(rand(1, 90))
             ]);
         }
     }
